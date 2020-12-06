@@ -363,19 +363,19 @@ namespace DBMod
         private static void OnPlayerLeft(IntPtr @this, IntPtr playerPtr)
         {
             Player player = new Player(playerPtr);
-
-            if (!_Instance.avatarsInScene.ContainsKey(player.field_Internal_VRCPlayer_0.namePlate.prop_String_0) && !_Instance.originalSettings.ContainsKey(player.field_Internal_VRCPlayer_0.namePlate.prop_String_0))
+            if (!_Instance.avatarsInScene.ContainsKey(player.field_Private_APIUser_0.displayName) && !_Instance.originalSettings.ContainsKey(player.field_Private_APIUser_0.displayName))
             {
                 onPlayerLeftDelegate(@this, playerPtr);
                 return;
 
             }
 
-            _Instance.RemoveBonesOfGameObjectInAllPlayers(_Instance.avatarsInScene[player.field_Internal_VRCPlayer_0.namePlate.prop_String_0].Item4);
-            _Instance.DeleteOriginalColliders(player.field_Internal_VRCPlayer_0.namePlate.prop_String_0);
-            _Instance.RemovePlayerFromDict(player.field_Internal_VRCPlayer_0.namePlate.prop_String_0);
-            _Instance.RemoveDynamicBonesFromVisibilityList(player.field_Internal_VRCPlayer_0.namePlate.prop_String_0);
-            MelonLogger.Log(ConsoleColor.Blue, $"Player {player.field_Internal_VRCPlayer_0.namePlate.prop_String_0} left the room so all his dynamic bones info was deleted");
+            _Instance.RemoveBonesOfGameObjectInAllPlayers(_Instance.avatarsInScene[player.field_Private_APIUser_0.displayName].Item4);
+            _Instance.DeleteOriginalColliders(player.field_Private_APIUser_0.displayName);
+            _Instance.RemovePlayerFromDict(player.field_Private_APIUser_0.displayName);
+            _Instance.RemoveDynamicBonesFromVisibilityList(player.field_Private_APIUser_0.displayName);
+            MelonLogger.Log(ConsoleColor.Blue, $"Player {player.field_Private_APIUser_0.displayName} left the room so all his dynamic bones info was deleted");
+            
             onPlayerLeftDelegate(@this, playerPtr);
         }
 
@@ -419,7 +419,7 @@ namespace DBMod
                     }
 
                     _Instance.AddOrReplaceWithCleanup(
-                        avatar.transform.root.GetComponentInChildren<VRCPlayer>().namePlate.prop_String_0,
+                        avatar.transform.root.GetComponentInChildren<VRCPlayer>().prop_String_0,
                         new System.Tuple<GameObject, bool, DynamicBone[], DynamicBoneCollider[], bool>(
                             avatar,
                             avatar.transform.root.GetComponentInChildren<VRCPlayer>().prop_VRCPlayerApi_0.IsUserInVR(),
@@ -428,7 +428,7 @@ namespace DBMod
                             APIUser.IsFriendsWith(avatar.transform.root.GetComponentInChildren<Player>().prop_APIUser_0.id)));
 
                     MelonLogger.Log(ConsoleColor.Blue, "New avatar loaded, added to avatar list");
-                    MelonLogger.Log(ConsoleColor.Green, $"Added {avatar.transform.root.GetComponentInChildren<VRCPlayer>().namePlate.prop_String_0}");
+                    MelonLogger.Log(ConsoleColor.Green, $"Added {avatar.transform.root.GetComponentInChildren<VRCPlayer>().prop_String_0}");
                 }
             }
             catch (System.Exception ex)
