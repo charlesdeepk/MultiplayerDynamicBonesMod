@@ -535,6 +535,7 @@ namespace DBMod
         {
             foreach (System.Tuple<GameObject, bool, DynamicBone[], DynamicBoneCollider[], bool> player in avatarsInScene.Values)
             {
+                MelonLogger.Log(ConsoleColor.Red, $"AddAllCollidersToAllPlayers - {player.Item5}");
                 AddCollidersToAllPlayers(player);
                 //AddBonesOfGameObjectToAllPlayers(player);
             }
