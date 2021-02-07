@@ -386,6 +386,16 @@ namespace DBMod
         private static void OnPlayerLeft(IntPtr @this, IntPtr playerPtr)
         {
             Player player = new Player(playerPtr);
+
+            if (player.transform.root.gameObject.name.Contains("[Local]"))
+            {
+#if DEBUG
+                MelonLogger.Log(ConsoleColor.Red, $"Not removing local player info");
+#endif
+                onPlayerLeftDelegate(@this, playerPtr);
+                return;
+            }
+
             if (!_Instance.avatarsInScene.ContainsKey(player.field_Internal_VRCPlayer_0.prop_String_0) && !_Instance.originalSettings.ContainsKey(player.field_Internal_VRCPlayer_0.prop_String_0))
             {
 
