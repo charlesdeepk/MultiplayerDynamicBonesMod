@@ -29,8 +29,8 @@ namespace DBMod
 {
     internal class NDB : MelonMod
     {
-        public const int VERSION = 35;
-        public const string VERSION_STR = "build 35";
+        //public const int VERSION = 1035;
+        public const string VERSION_STR = "1035";
 
         private static class NDBConfig
         {
@@ -191,23 +191,23 @@ namespace DBMod
 
             OnModSettingsApplied();
 
-            if (NDBConfig.updateMode == 2)
-            {
-                new Thread(new ThreadStart(CheckForUpdates)).Start();
-            }
-            else if (NDBConfig.updateMode == 0)
-            {
-                int result = MessageBox(IntPtr.Zero, "Multiplayer Dynamic Bones can check for updates and notify you when one is avaiable. Do you want to enable update checks?", "Multiplayer Dynamic Bones mod", 0x04 | 0x40 | 0x1000 | 0x010000);
-                if (result == 6)
-                {
-                    NDBConfig.updateMode = 2;
-                }
-                else if (result == 7)
-                {
-                    NDBConfig.updateMode = 1;
-                }
-                MelonPrefs.SetInt("NDB", "UpdateMode", NDBConfig.updateMode);
-            }
+            //if (NDBConfig.updateMode == 2)
+            //{
+            //    new Thread(new ThreadStart(CheckForUpdates)).Start();
+            //}
+            //else if (NDBConfig.updateMode == 0)
+            //{
+            //    int result = MessageBox(IntPtr.Zero, "Multiplayer Dynamic Bones can check for updates and notify you when one is avaiable. Do you want to enable update checks?", "Multiplayer Dynamic Bones mod", 0x04 | 0x40 | 0x1000 | 0x010000);
+            //    if (result == 6)
+            //    {
+            //        NDBConfig.updateMode = 2;
+            //    }
+            //    else if (result == 7)
+            //    {
+            //        NDBConfig.updateMode = 1;
+            //    }
+            //    MelonPrefs.SetInt("NDB", "UpdateMode", NDBConfig.updateMode);
+            //}
 
             enabled = NDBConfig.enabledByDefault;
 
@@ -233,26 +233,26 @@ namespace DBMod
             //}
         }
 
-        private void CheckForUpdates()
-        {
-            string url = $"https://github.com/charlesdeepk/MultiplayerDynamicBonesMod/releases/tag/{VERSION + 1}";
-            WebClient client = new WebClient();
-            try
-            {
-                _ = client.DownloadString(url);
-            }
-            catch
-            {
-                return;
-            }
+        //private void CheckForUpdates()
+        //{
+        //    string url = $"https://github.com/charlesdeepk/MultiplayerDynamicBonesMod/releases/tag/{VERSION + 1}";
+        //    WebClient client = new WebClient();
+        //    try
+        //    {
+        //        _ = client.DownloadString(url);
+        //    }
+        //    catch
+        //    {
+        //        return;
+        //    }
 
-            if (MessageBox(IntPtr.Zero, "There is an update avaiable for Multiplayer Dynamic Bones. Not updating could result in the mod not working or the game crashing. Do you want to launch the internet browser?", "Multiplayer Dynamic Bones mod", 0x04 | 0x40 | 0x1000) == 6)
-            {
-                Process.Start(url);
-                MessageBox(IntPtr.Zero, "Please replace the file and restart VRChat for the update to apply", "Multiplayer Dynamic Bones mod", 0x40 | 0x1000);
-            }
+        //    if (MessageBox(IntPtr.Zero, "There is an update avaiable for Multiplayer Dynamic Bones. Not updating could result in the mod not working or the game crashing. Do you want to launch the internet browser?", "Multiplayer Dynamic Bones mod", 0x04 | 0x40 | 0x1000) == 6)
+        //    {
+        //        Process.Start(url);
+        //        MessageBox(IntPtr.Zero, "Please replace the file and restart VRChat for the update to apply", "Multiplayer Dynamic Bones mod", 0x40 | 0x1000);
+        //    }
 
-        }
+        //}
 
         private static unsafe void RegisterModPrefs()
         {
@@ -386,6 +386,16 @@ namespace DBMod
         private static void OnPlayerLeft(IntPtr @this, IntPtr playerPtr)
         {
             Player player = new Player(playerPtr);
+
+            if (player.transform.root.gameObject.name.Contains("[Local]"))
+            {
+#if DEBUG
+                MelonLogger.Log(ConsoleColor.Red, $"Not removing local player info");
+#endif
+                onPlayerLeftDelegate(@this, playerPtr);
+                return;
+            }
+
             if (!_Instance.avatarsInScene.ContainsKey(player.field_Internal_VRCPlayer_0.prop_String_0) && !_Instance.originalSettings.ContainsKey(player.field_Internal_VRCPlayer_0.prop_String_0))
             {
 
